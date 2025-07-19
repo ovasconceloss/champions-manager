@@ -7,5 +7,6 @@ readme = "README.md"
 keywords = ["gamedev", "rust", "engine", "football"]
 repository = "https://github.com/ovasconceloss/champions-manager"
 authors = ["Victor Vasconcelos victorolimpiovasconcelos.dev@gmail.com"]
+description = "a football managemant system (game) developed with rust."
 
 [dependencies]
