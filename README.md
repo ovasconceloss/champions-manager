@@ -1,0 +1,1 @@
+# CM2026: Champions Manager 2026

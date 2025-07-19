@@ -1,0 +1,11 @@
+[package]
+name = "champions-manager"
+license = "MIT"
+edition = "2024"
+version = "1.0.0"
+readme = "README.md"
+keywords = ["gamedev", "rust", "engine", "football"]
+repository = "https://github.com/ovasconceloss/champions-manager"
+authors = ["Victor Vasconcelos victorolimpiovasconcelos.dev@gmail.com"]
+
+[dependencies]
