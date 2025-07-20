@@ -12,3 +12,4 @@ description = "a football managemant system (game) developed with rust."
 [dependencies]
 rand = "0.9.1"
 serde = "1.0.219"
+uuid = { version = "1.17.0", features = ["v4"] }
