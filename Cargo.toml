@@ -10,3 +10,5 @@ authors = ["Victor Vasconcelos victorolimpiovasconcelos.dev@gmail.com"]
 description = "a football managemant system (game) developed with rust."
 
 [dependencies]
+rand = "0.9.1"
+serde = "1.0.219"
