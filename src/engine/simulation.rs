@@ -1,5 +1,4 @@
-use rand::Rng;
-use crate::core::{matches::model::Matches, player::{model::Player, positions::Position}, team::model::{Team, TeamStatus}};
+use crate::{core::{matches::model::Matches, player::model::Player, team::model::{Team, TeamStatus}}, engine::utils::{calculate_team_strength, generate_poisson_variante, normalize_overall}};
 
 const N_ATTACK: i32 = 3;
 const N_DEFENSE: i32 = 4;
@@ -13,56 +12,17 @@ const X_MIN_DEFENSE: i32 = PLAYER_MIN_OVERALL * N_DEFENSE;
 const X_MAX_MIDFIELD: i32 = PLAYER_MAX_OVERALL * N_MIDFIELD;
 const X_MIN_MIDFIELD: i32 = PLAYER_MIN_OVERALL * N_MIDFIELD;
 
-fn generate_poisson_variante(xg: f64) -> i32 {
-  let mut rng = rand::rng();
+pub fn simulate_match(home_team: Team, away_team: Team, home_squad: &[Player], away_squad: &[Player]) -> Matches {
+  let (home_attack, home_defense, home_midfield) = calculate_team_strength(&home_squad);
+  let (away_attack, away_defense, away_midfield) = calculate_team_strength(&away_squad);
 
-  let l: f64 = (-xg).exp();
-  let mut k: i32 = 0;
-  let mut p: f64 = 1.0;
+  let home_attack_overall = normalize_overall(home_attack, X_MIN_ATTACK, X_MAX_ATTACK);
+  let home_defense_overall = normalize_overall(home_defense, X_MIN_DEFENSE, X_MAX_DEFENSE);
+  let home_midfield_overall = normalize_overall(home_midfield, X_MIN_MIDFIELD, X_MAX_MIDFIELD);
 
-  loop {
-    let u: f64 = rng.random_range(0.0..1.0);
-    p = p * u;
-    k = k + 1;
-    if p <= l {
-      return k - 1;
-    }
-  }
-}
-
-pub fn simulate_match(home_team: Team, away_team: Team, home_squad: Vec<Player>, away_squad: Vec<Player>) -> Matches {
-  let mut home_attack: i32 = 0;
-  let mut home_defense: i32 = 0;
-  let mut home_midfield: i32 = 0;
-
-  let mut away_attack: i32 = 0;
-  let mut away_defense: i32 = 0;
-  let mut away_midfield: i32 = 0;
-
-  for n in 0..home_squad.len() {
-    match home_squad[n].position {
-      Position::Attack => home_attack += home_squad[n].overall,
-      Position::Defense => home_defense += home_squad[n].overall,
-      Position::Middlefier => home_midfield += home_squad[n].overall
-    }
-  }
-
-  for n in 0..away_squad.len() {
-    match away_squad[n].position {
-      Position::Attack => away_attack += away_squad[n].overall,
-      Position::Defense => away_defense += away_squad[n].overall,
-      Position::Middlefier => away_midfield += away_squad[n].overall
-    }
-  }
-
-  let home_attack_overall = ((home_attack - X_MIN_ATTACK) * 99) / (X_MAX_ATTACK - X_MIN_ATTACK);
-  let away_attack_overall = ((away_attack - X_MIN_ATTACK) * 99) / (X_MAX_ATTACK - X_MIN_ATTACK);
-
-  let home_defense_overall = ((home_defense - X_MIN_DEFENSE) * 99) / (X_MAX_DEFENSE - X_MIN_DEFENSE);
-  let away_defense_overall = ((away_defense - X_MIN_DEFENSE) * 99) / (X_MAX_DEFENSE - X_MIN_DEFENSE);
-
-  let home_midfield_overall = ((home_midfield - X_MIN_MIDFIELD) * 99) / (X_MAX_MIDFIELD - X_MIN_MIDFIELD);
-  let away_midfield_overall = ((away_midfield - X_MIN_MIDFIELD) * 99) / (X_MAX_MIDFIELD - X_MIN_MIDFIELD);
+  let away_attack_overall = normalize_overall(away_attack, X_MIN_ATTACK, X_MAX_ATTACK);
+  let away_defense_overall = normalize_overall(away_defense, X_MIN_DEFENSE, X_MAX_DEFENSE);
+  let away_midfield_overall = normalize_overall(away_midfield, X_MIN_MIDFIELD, X_MAX_MIDFIELD);
 
   let home_strength = TeamStatus::new_status(home_attack_overall, home_defense_overall, home_midfield_overall);
   let away_strength = TeamStatus::new_status(away_attack_overall, away_defense_overall, away_midfield_overall);
