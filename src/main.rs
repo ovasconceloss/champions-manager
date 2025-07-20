@@ -14,6 +14,6 @@ fn main() {
         team_b_squad.push(Player::new(alphabet[index].to_string(), team_b.uuid));
     }
 
-    let result: Matches = simulate_match(team_a.clone(), team_b.clone(), team_a_squad, team_b_squad);
+    let result: Matches = simulate_match(team_a.clone(), team_b.clone(), &team_a_squad,& team_b_squad);
     println!("{:?}", result);
 }
